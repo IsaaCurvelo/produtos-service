@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.produtosservice.domain.mapper.EstoqueMapper">
+
+    <insert id="inserir"  useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+            parameterType="com.example.produtosservice.domain.model.Estoque">
+
+        INSERT INTO estoque (produto_id, quantidade, filial_id) VALUES (#{produto.id}, #{quantidade}, #{filial.id})
+    </insert>
+
+    <update id="atualizar">
+        UPDATE
+            estoque
+        SET
+            produto_id = #{produto.id},
+            quantidade = #{quantidade},
+            filial_id = #{filial.id}
+        WHERE
+            id =#{id}
+    </update>
+
+
+    <resultMap id="estoqueResultMap" type="com.example.produtosservice.domain.model.Estoque">
+        <result property="id" column="id"/>
+        <result property="quantidade" column="quantidade"/>
+        <association property="produto" resultMap="produtoResultMap"/>
+        <association property="filial" resultMap="filialResultMap"/>
+    </resultMap>
+
+    <resultMap id="filialResultMap" type="com.example.produtosservice.domain.model.Filial">
+        <result property="id" column="filial_id"/>
+        <result property="nome" column="filial_nome"/>
+    </resultMap>
+
+    <resultMap id="produtoResultMap" type="com.example.produtosservice.domain.model.Produto">
+        <result property="id" column="produto_id"/>
+        <result property="nome" column="produto_nome"/>
+        <result property="preco" column="produto_preco"/>
+    </resultMap>
+
+    <select id="listar" resultMap="estoqueResultMap">
+        SELECT
+            e.id                as id,
+            f.id                as filial_id,
+            f.nome              as filial_nome,
+            p.id                as produto_id,
+            p.nome              as produto_nome,
+            p.preco             as produto_preco,
+            e.quantidade        as quantidade
+        FROM
+            estoque e
+        INNER JOIN
+            produto p
+        ON
+            p.id = e.produto_id
+        INNER JOIN
+            filial f
+        ON
+            f.id = e.filial_id
+    </select>
+
+    <select id="porId" resultMap="estoqueResultMap" parameterType="Long">
+        SELECT
+            e.id                as id,
+            f.id                as filial_id,
+            f.nome              as filial_nome,
+            p.id                as produto_id,
+            p.nome              as produto_nome,
+            p.preco             as produto_preco,
+            e.quantidade        as quantidade
+        FROM
+            estoque e
+        INNER JOIN
+            produto p
+        ON
+            p.id = e.produto_id
+        INNER JOIN
+            filial f
+        ON
+            f.id = e.filial_id
+        WHERE
+            e.id = #{id}
+    </select>
+
+</mapper>

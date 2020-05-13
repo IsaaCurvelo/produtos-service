@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.produtosservice.domain.mapper.ProdutoMapper">
+
+    <insert id="inserir" useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+    parameterType="com.example.produtosservice.domain.model.Produto">
+        INSERT INTO produto (nome, preco) VALUES (#{nome}, #{preco})
+    </insert>
+
+    <update id="atualizar">
+        update
+            produto
+        set
+            nome = #{nome},
+            preco = #{preco}
+        where
+            id =#{id}
+    </update>
+
+
+    <resultMap id="resultMap" type="com.example.produtosservice.domain.model.Produto">
+        <result property="id" column="id"/>
+        <result property="nome" column="nome"/>
+        <result property="preco" column="preco"/>
+    </resultMap>
+
+
+    <select id="listar" resultMap="resultMap">
+        select * from produto
+    </select>
+
+    <select id="porId" resultMap="resultMap" parameterType="Long">
+        select
+            *
+        from
+            produto
+        where
+            id = #{id}
+    </select>
+
+</mapper>
